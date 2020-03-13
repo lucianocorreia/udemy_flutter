@@ -19,9 +19,24 @@ class HomePage extends StatelessWidget {
     return Container(
       color: Colors.white,
       child: Center(
-        child: _img(),
+        child: _button(),
       ),
     );
+  }
+
+  _button() {
+    return RaisedButton(
+      color: Colors.blue,
+      onPressed: () => this._onClickOk(),
+      child: Text(
+        'Ok',
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+  void _onClickOk() {
+    print('On Click Ok');
   }
 
   _img() {
