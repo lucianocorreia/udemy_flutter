@@ -19,9 +19,13 @@ class HomePage extends StatelessWidget {
     return Container(
       color: Colors.white,
       child: Center(
-        child: _text(),
+        child: _img(),
       ),
     );
+  }
+
+  _img() {
+    return Image.asset('assets/images/dog2.png');
   }
 
   _text() {
