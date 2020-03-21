@@ -1,3 +1,14 @@
+import 'dart:async';
+
+import 'package:carros/models/usuario.dart';
+import 'package:carros/pages/home_page.dart';
+import 'package:carros/pages/login_bloc.dart';
+import 'package:carros/utils/alert.dart';
+import 'package:carros/utils/api.dart';
+import 'package:carros/utils/api_response.dart';
+import 'package:carros/utils/nav.dart';
+import 'package:carros/widgets/app_button.dart';
+import 'package:carros/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,12 +19,21 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _loginController = TextEditingController();
-
   final _senhaController = TextEditingController();
-
   final _formKey = GlobalKey<FormState>();
-
   final _focusSenha = FocusNode();
+  final _bloc = LoginBloc();
+
+  @override
+  void initState() {
+    super.initState();
+
+    Usuario.get().then((user) {
+      if (user != null) {
+        push(context, HomePage(), replace: true);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.all(16),
         child: ListView(
           children: <Widget>[
-            _text(
+            AppText(
               'Login',
               'Informe o login',
               controller: _loginController,
@@ -44,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: 20,
             ),
-            _text(
+            AppText(
               'Senha',
               'Informe a senha',
               password: true,
@@ -56,68 +76,35 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: 20,
             ),
-            _button('Entrar', _onClickLogin),
+            StreamBuilder<bool>(
+                stream: _bloc.stream,
+                initialData: false,
+                builder: (context, snapshot) {
+                  return AppButton(
+                    'Entrar',
+                    onPressed: _onClickLogin,
+                    showProgress: snapshot.data ?? false,
+                  );
+                }),
           ],
         ),
       ),
     );
   }
 
-  Container _button(String text, Function onPressed) {
-    return Container(
-      height: 46,
-      child: RaisedButton(
-        onPressed: onPressed,
-        color: Colors.blue,
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-          ),
-        ),
-      ),
-    );
-  }
-
-  TextFormField _text(
-    String label,
-    String hint, {
-    bool password = false,
-    TextEditingController controller,
-    FormFieldValidator<String> validator,
-    TextInputType keyboardType,
-    TextInputAction textInputAction,
-    FocusNode focusNode,
-    FocusNode nextFocus,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: password,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-      ),
-      validator: validator,
-      keyboardType: keyboardType,
-      textInputAction: textInputAction,
-      focusNode: focusNode,
-      onFieldSubmitted: (String text) {
-        if (nextFocus != null) FocusScope.of(context).requestFocus(nextFocus);
-      },
-    );
-  }
-
-  _onClickLogin() {
-    bool formOk = _formKey.currentState.validate();
-    if (!formOk) {
+  _onClickLogin() async {
+    if (!_formKey.currentState.validate()) {
       return;
     }
 
     String login = _loginController.text;
     String senha = _senhaController.text;
 
-    print('login: $login, senha: $senha');
+    ApiResponse response = await _bloc.login(login, senha);
+    if (response.ok) {
+      push(context, HomePage(), replace: true);
+    } else
+      alert(context, response.msg);
   }
 
   String _validateLogin(String text) {
@@ -132,5 +119,11 @@ class _LoginPageState extends State<LoginPage> {
       return 'Digite a senha';
     } else
       return null;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bloc.dispose();
   }
 }
