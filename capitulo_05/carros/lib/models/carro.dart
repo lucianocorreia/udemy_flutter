@@ -2,7 +2,7 @@ class Carro {
   int id;
   String tipo;
   String nome;
-  String desc;
+  String descricao;
   String urlFoto;
   String urlVideo;
   String latitude;
@@ -12,7 +12,7 @@ class Carro {
       {this.id,
       this.tipo,
       this.nome,
-      this.desc,
+      this.descricao,
       this.urlFoto,
       this.urlVideo,
       this.latitude,
@@ -22,7 +22,7 @@ class Carro {
     id = json['id'];
     tipo = json['tipo'];
     nome = json['nome'];
-    desc = json['desc'];
+    descricao = json['descricao'];
     urlFoto = json['urlFoto'];
     urlVideo = json['urlVideo'];
     latitude = json['latitude'];
@@ -34,7 +34,7 @@ class Carro {
     data['id'] = this.id;
     data['tipo'] = this.tipo;
     data['nome'] = this.nome;
-    data['desc'] = this.desc;
+    data['descricao'] = this.descricao;
     data['urlFoto'] = this.urlFoto;
     data['urlVideo'] = this.urlVideo;
     data['latitude'] = this.latitude;

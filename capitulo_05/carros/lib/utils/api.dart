@@ -49,4 +49,14 @@ class Api {
 
     return list.map<Carro>((map) => Carro.fromJson(map)).toList();
   }
+
+  static Future<String> getLoripsum() async {
+    var url = 'https://loripsum.net/api';
+    var response = await http.get(url);
+    String text = response.body;
+    text = text.replaceAll("<p>", '');
+    text = text.replaceAll("</p>", '');
+
+    return text;
+  }
 }
