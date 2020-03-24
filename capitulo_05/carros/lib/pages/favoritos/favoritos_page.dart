@@ -1,21 +1,19 @@
 import 'package:carros/models/carro.dart';
 import 'package:carros/pages/carros_bloc.dart';
+import 'package:carros/pages/favoritos/favoritos_bloc.dart';
 import 'package:carros/pages/widgets/carros_listview.dart';
 import 'package:carros/pages/widgets/text_error.dart';
 import 'package:carros/utils/api.dart';
 import 'package:flutter/material.dart';
 
-class CarrosPage extends StatefulWidget {
-  final TipoCarro tipo;
-  CarrosPage(this.tipo);
-
+class FavoritosPage extends StatefulWidget {
   @override
-  _CarrosPageState createState() => _CarrosPageState();
+  _FavoritosPageState createState() => _FavoritosPageState();
 }
 
-class _CarrosPageState extends State<CarrosPage>
-    with AutomaticKeepAliveClientMixin<CarrosPage> {
-  final _bloc = CarrosBloc();
+class _FavoritosPageState extends State<FavoritosPage>
+    with AutomaticKeepAliveClientMixin<FavoritosPage> {
+  final _bloc = FavoritosBloc();
 
   @override
   bool get wantKeepAlive => true;
@@ -24,7 +22,7 @@ class _CarrosPageState extends State<CarrosPage>
   void initState() {
     super.initState();
 
-    _bloc.loadCarros(widget.tipo);
+    _bloc.loadCarros();
   }
 
   @override
@@ -54,7 +52,7 @@ class _CarrosPageState extends State<CarrosPage>
   }
 
   Future<void> _onRefresh() {
-    return _bloc.loadCarros(widget.tipo);
+    return _bloc.loadCarros();
   }
 
   @override

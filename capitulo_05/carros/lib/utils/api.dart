@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:carros/models/carro.dart';
 import 'package:carros/models/usuario.dart';
+import 'package:carros/pages/favoritos/carro_dao.dart';
 import 'package:carros/utils/api_response.dart';
 import 'package:http/http.dart' as http;
 
@@ -28,7 +29,7 @@ class Api {
       }
 
       return ApiResponse.error(mapResponse['error']);
-    } catch (error, exception) {
+    } catch (error) {
       return ApiResponse.error('Não foi possivel fazer o login.');
     }
   }
@@ -47,7 +48,13 @@ class Api {
     var response = await http.get(url, headers: headers);
     List list = json.decode(response.body);
 
-    return list.map<Carro>((map) => Carro.fromJson(map)).toList();
+    List<Carro> carros = list.map<Carro>((map) => Carro.fromMap(map)).toList();
+
+    final carroDao = CarroDAO();
+
+    carros.forEach((carro) => carroDao.save(carro));
+
+    return carros;
   }
 
   static Future<String> getLoripsum() async {

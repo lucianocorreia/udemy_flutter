@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:carros/models/usuario.dart';
 import 'package:carros/pages/home_page.dart';
 import 'package:carros/pages/login_bloc.dart';
 import 'package:carros/utils/alert.dart';
-import 'package:carros/utils/api.dart';
 import 'package:carros/utils/api_response.dart';
 import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/app_button.dart';
@@ -27,12 +25,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-
-    Usuario.get().then((user) {
-      if (user != null) {
-        push(context, HomePage(), replace: true);
-      }
-    });
   }
 
   @override
